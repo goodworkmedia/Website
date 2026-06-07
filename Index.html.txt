@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Good Work Media</title>
+<meta name="description" content="Good Work Media — a home for emerging artists, writers, and creators. Based in San Luis Obispo, California.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Josefin+Sans:wght@300;400&display=swap" rel="stylesheet">
+<script>
+// ============================================================
+//  IMAGE CONFIGURATION
+//  Paste a URL between the quotes to show an image.
+//  Leave as "" to show a placeholder box instead.
+// ============================================================
+const IMAGES = {
+  hero_bg:            "",   // Full-width hero background
+  mission_side:       "",   // Home — beside mission text
+  banner_books:       "",   // Home — full-width banner
+  about_header:       "",   // About page header background
+  projects_header:    "",   // Our Projects header background
+  heritage_header:    "",   // Heritage page header + project card
+  heritage_arch:      "",   // Heritage page — arch portrait
+  zines_header:       "",   // Zines page header + project card
+  annual_header:      "",   // Annual Review header + project card
+  how_side:           "",   // How It Works — beside steps
+  submissions_header: "",   // Submissions page header
+  blog_header:        "",   // Blog page header
+  contact_header:     "",   // Contact page header
+
+  // TEAM PORTRAITS
+  delany: "https://res.cloudinary.com/dh0teyt7b/image/upload/v1776391622/Delany_tkozcb.jpg",
+  sarah:  "https://res.cloudinary.com/dh0teyt7b/image/upload/v1776391622/sarah_g56equ.jpg",
+};
+// ============================================================
+</script>
+<style>
+  :root {
+    --black:#0a0908; --dark:#111010; --card:#161412;
+    --gold:#c9a84c; --cream:#f0e6d3; --muted:#8a7d6e; --border:#2a2420;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--black);color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:18px;line-height:1.7;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.4;}
+
+  /* NAV */
+  nav{position:fixed;top:0;width:100%;z-index:1000;padding:1.2rem 4rem;display:flex;align-items:center;justify-content:space-between;background:rgba(10,9,8,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);}
+  .wordmark{font-family:'Playfair Display',serif;font-size:1.1rem;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;text-decoration:none;cursor:pointer;}
+  .wordmark span{color:var(--muted);font-style:italic;font-weight:400;letter-spacing:0.05em;text-transform:none;font-size:0.75rem;display:block;margin-top:-4px;}
+  .nav-links{display:flex;gap:2.5rem;list-style:none;align-items:center;}
+  .nav-links a{font-family:'Josefin Sans',sans-serif;font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.3s;cursor:pointer;}
+  .nav-links a:hover{color:var(--gold);}
+  .dropdown{position:relative;}
+  .dropdown-menu{display:none;position:absolute;top:calc(100% + 0.5rem);left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);min-width:190px;z-index:2000;}
+  .dropdown-menu.open{display:block;}
+  .dropdown-menu a{display:block;padding:0.7rem 1.5rem;border-bottom:1px solid var(--border);white-space:nowrap;}
+  .dropdown-menu a:last-child{border-bottom:none;}
+
+  /* PAGES */
+  .page{display:none;padding-top:80px;min-height:100vh;}
+  .page.active{display:block;}
+
+  /* HERO */
+  .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6rem 2rem 4rem;position:relative;overflow:hidden;}
+  .hero-bg-layer{position:absolute;inset:0;z-index:0;}
+  .hero-bg-layer img{width:100%;height:100%;object-fit:cover;filter:saturate(0.4) brightness(0.4);}
+  .hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,9,8,0.6) 0%,rgba(10,9,8,0.3) 40%,rgba(10,9,8,0.9) 100%);z-index:1;}
+  .hero>*:not(.hero-bg-layer):not(.hero-overlay){position:relative;z-index:2;}
+  .hero-eyebrow{font-family:'Josefin Sans',sans-serif;font-size:0.65rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--gold);margin-bottom:2rem;}
+  .hero h1{font-family:'Playfair Display',serif;font-size:clamp(3.5rem,8vw,7rem);line-height:1.05;font-weight:700;color:var(--cream);}
+  .hero h1 em{font-style:italic;color:var(--gold);}
+  .hero-sub{font-size:1.2rem;font-style:italic;color:var(--muted);margin:1.5rem 0 3rem;max-width:520px;}
+  .hero-divider{width:80px;height:1px;background:var(--gold);margin:0 auto 3rem;opacity:0.5;}
+
+  /* BUTTONS */
+  .btn{display:inline-block;font-family:'Josefin Sans',sans-serif;font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;padding:1rem 2.5rem;border:1px solid var(--gold);color:var(--gold);text-decoration:none;cursor:pointer;background:transparent;transition:all 0.3s;margin:0.4rem;}
+  .btn:hover{background:var(--gold);color:var(--black);}
+  .btn-filled{background:var(--gold);color:var(--black);}
+  .btn-filled:hover{background:transparent;color:var(--gold);}
+
+  /* LAYOUT */
+  section{padding:6rem 4rem;max-width:1200px;margin:0 auto;}
+  .section-full{max-width:100%;padding:6rem 4rem;border-top:1px solid var(--border);}
+  .section-label{font-family:'Josefin Sans',sans-serif;font-size:0.62rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
+  h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.2rem);line-height:1.2;font-weight:400;color:var(--cream);margin-bottom:1.5rem;}
+  h2 em{font-style:italic;color:var(--gold);}
+  h3{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:400;color:var(--cream);margin-bottom:1rem;}
+  p{color:var(--muted);margin-bottom:1.2rem;}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;}
+
+  /* MARQUEE */
+  .marquee-wrap{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:1rem 0;overflow:hidden;white-space:nowrap;}
+  .marquee-inner{display:inline-block;animation:marquee 25s linear infinite;}
+  .marquee-inner span{font-family:'Josefin Sans',sans-serif;font-size:0.65rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--muted);padding:0 2rem;}
+  .marquee-inner span.gold{color:var(--gold);}
+  @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* PLACEHOLDER */
+  .img-placeholder{background:var(--card);border:1px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--border);gap:0.5rem;width:100%;height:100%;}
+  .img-placeholder span{font-family:'Josefin Sans',sans-serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;}
+
+  /* CARDS */
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2px;margin-top:3rem;}
+  .card{background:var(--card);border:1px solid var(--border);padding:2.5rem;transition:border-color 0.3s;cursor:pointer;}
+  .card:hover{border-color:var(--gold);}
+
+  /* PROJECT CARDS */
+  .project-card{background:var(--card);border:1px solid var(--border);overflow:hidden;transition:border-color 0.3s;cursor:pointer;}
+  .project-card:hover{border-color:var(--gold);}
+  .project-card-img{width:100%;height:220px;position:relative;overflow:hidden;}
+  .project-card-img img{width:100%;height:100%;object-fit:cover;filter:saturate(0.5) brightness(0.6);transition:filter 0.4s;}
+  .project-card:hover .project-card-img img{filter:saturate(0.7) brightness(0.8);}
+  .project-card-body{padding:2rem;}
+
+  /* ARCH FRAME */
+  .arch-frame{border:1px solid var(--gold);border-radius:200px 200px 0 0;overflow:hidden;width:100%;height:400px;}
+  .arch-frame img{width:100%;height:100%;object-fit:cover;filter:saturate(0.8);}
+
+  /* PAGE HEADER */
+  .page-header{padding:5rem 4rem 3rem;border-bottom:1px solid var(--border);text-align:center;position:relative;overflow:hidden;}
+  .page-header-bg{position:absolute;inset:0;z-index:0;}
+  .page-header-bg img{width:100%;height:100%;object-fit:cover;filter:saturate(0.3) brightness(0.2);}
+  .page-header-overlay{position:absolute;inset:0;background:rgba(10,9,8,0.6);z-index:1;}
+  .page-header>*:not(.page-header-bg):not(.page-header-overlay){position:relative;z-index:2;}
+
+  /* GOLD DIVIDER */
+  .gold-divider{display:flex;align-items:center;gap:1rem;margin:4rem 0;}
+  .gold-divider::before,.gold-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+  .gold-divider-star{color:var(--gold);font-size:0.8rem;}
+
+  /* FEATURE STRIP */
+  .feature-strip{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+  .feature-item{padding:3rem;border-right:1px solid var(--border);text-align:center;}
+  .feature-item:last-child{border-right:none;}
+  .feature-num{font-family:'Playfair Display',serif;font-size:3rem;color:var(--gold);display:block;margin-bottom:0.5rem;}
+
+  /* BANNER */
+  .img-banner{width:100%;height:350px;overflow:hidden;position:relative;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+  .img-banner img{width:100%;height:100%;object-fit:cover;filter:saturate(0.4) brightness(0.35);}
+  .img-banner-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;}
+
+  /* TEAM */
+  .team-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;margin-top:3rem;}
+  .team-card{display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .team-portrait{width:220px;height:220px;border-radius:50%;overflow:hidden;border:2px solid var(--gold);margin-bottom:1.5rem;flex-shrink:0;}
+  .team-portrait img{width:100%;height:100%;object-fit:cover;object-position:center top;}
+
+  /* STEPS */
+  .steps{counter-reset:step;}
+  .step{border-left:1px solid var(--border);padding:0 0 3rem 2.5rem;position:relative;margin-left:1rem;}
+  .step:last-child{padding-bottom:0;}
+  .step::before{counter-increment:step;content:counter(step);position:absolute;left:-1rem;top:0;width:2rem;height:2rem;background:var(--black);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:0.9rem;color:var(--gold);}
+
+  /* EPISODE */
+  .episode-card{background:var(--card);border:1px solid var(--border);padding:2rem 2.5rem;display:flex;align-items:center;gap:2rem;margin-bottom:2px;transition:border-color 0.3s;cursor:pointer;}
+  .episode-card:hover{border-color:var(--gold);}
+  .ep-num{font-family:'Playfair Display',serif;font-size:2.5rem;color:var(--border);min-width:60px;text-align:center;}
+  .ep-play{width:44px;height:44px;border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:0.8rem;flex-shrink:0;transition:all 0.3s;}
+  .episode-card:hover .ep-play{background:var(--gold);color:var(--black);}
+
+  /* FORM */
+  .form-group{margin-bottom:1.5rem;}
+  label{font-family:'Josefin Sans',sans-serif;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:0.5rem;}
+  input,textarea,select{width:100%;background:var(--card);border:1px solid var(--border);color:var(--cream);padding:0.9rem 1.2rem;font-family:'Cormorant Garamond',serif;font-size:1rem;outline:none;transition:border-color 0.3s;}
+  input:focus,textarea:focus,select:focus{border-color:var(--gold);}
+  textarea{min-height:140px;resize:vertical;}
+  select option{background:var(--card);}
+
+  /* GUIDELINES */
+  .guidelines-box{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--gold);padding:2rem 2.5rem;margin:2rem 0;}
+  .guidelines-box h4{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--cream);margin-bottom:0.7rem;}
+
+  /* SHOP */
+  .shop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2px;margin-top:3rem;}
+  .shop-card{background:var(--card);border:1px solid var(--border);transition:border-color 0.3s;}
+  .shop-card:hover{border-color:var(--gold);}
+  .shop-body{padding:1.5rem;}
+  .shop-price{font-family:'Josefin Sans',sans-serif;font-size:0.7rem;letter-spacing:0.2em;color:var(--gold);margin-bottom:0.5rem;}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--border);padding:4rem;display:grid;grid-template-columns:2fr 1fr 1fr;gap:4rem;background:var(--dark);}
+  .footer-links{list-style:none;}
+  .footer-links li{margin-bottom:0.7rem;}
+  .footer-links a{font-family:'Josefin Sans',sans-serif;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);text-decoration:none;cursor:pointer;transition:color 0.3s;}
+  .footer-links a:hover{color:var(--gold);}
+  .footer-bottom{border-top:1px solid var(--border);padding:1.5rem 4rem;display:flex;justify-content:space-between;align-items:center;background:var(--dark);}
+  .footer-bottom p{font-family:'Josefin Sans',sans-serif;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--border);margin:0;}
+
+  @media(max-width:768px){
+    nav{padding:1rem 1.5rem;} .nav-links{display:none;}
+    section{padding:4rem 1.5rem;} .section-full{padding:4rem 1.5rem;}
+    .two-col{grid-template-columns:1fr;gap:3rem;}
+    .team-grid{grid-template-columns:1fr;}
+    .feature-strip{grid-template-columns:1fr;}
+    .feature-item{border-right:none;border-bottom:1px solid var(--border);}
+    footer{grid-template-columns:1fr;gap:2rem;padding:3rem 1.5rem;}
+    .footer-bottom{padding:1.5rem;flex-direction:column;gap:0.5rem;}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="wordmark" onclick="showPage('home')">
+    Good Work Media
+    <span>for the emerging artist</span>
+  </a>
+  <ul class="nav-links">
+    <li><a onclick="showPage('home')">Home</a></li>
+    <li><a onclick="showPage('about')">About</a></li>
+    <li class="dropdown">
+      <a id="projects-toggle">Our Projects ▾</a>
+      <div class="dropdown-menu" id="projects-menu">
+        <a onclick="showPage('projects')">Overview</a>
+        <a onclick="showPage('heritage')">Heritage Podcast</a>
+        <a onclick="showPage('zines')">Zines</a>
+        <a onclick="showPage('annual')">Annual Review</a>
+      </div>
+    </li>
+    <li><a onclick="showPage('how')">How It Works</a></li>
+    <li><a onclick="showPage('submissions')">Submissions</a></li>
+    <li><a onclick="showPage('shop')">Shop</a></li>
+    <li><a onclick="showPage('blog')">Blog</a></li>
+    <li><a onclick="showPage('contact')">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ══ HOME ══ -->
+<div id="home" class="page active">
+  <div class="hero">
+    <div class="hero-bg-layer" id="hero-bg-el"></div>
+    <div class="hero-overlay"></div>
+    <p class="hero-eyebrow"><span style="color:var(--gold)">✦</span> San Luis Obispo, California <span style="color:var(--gold)">✦</span></p>
+    <h1>Good Work<br><em>Media</em></h1>
+    <p class="hero-sub">A home for emerging artists, writers, and creators — where your voice is protected, refined, and heard.</p>
+    <div class="hero-divider"></div>
+    <div>
+      <button class="btn btn-filled" onclick="showPage('submissions')">Submit Your Work</button>
+      <button class="btn" onclick="showPage('about')">Our Mission</button>
+    </div>
+  </div>
+
+  <div class="marquee-wrap">
+    <div class="marquee-inner">
+      <span class="gold">✦</span><span>Publishing</span><span class="gold">✦</span><span>Podcasting</span><span class="gold">✦</span><span>Zines</span><span class="gold">✦</span><span>Annual Review</span><span class="gold">✦</span><span>Emerging Artists</span><span class="gold">✦</span><span>New Voices</span><span class="gold">✦</span><span>Good Work Media</span><span class="gold">✦</span><span>Publishing</span><span class="gold">✦</span><span>Podcasting</span><span class="gold">✦</span><span>Zines</span><span class="gold">✦</span><span>Annual Review</span><span class="gold">✦</span><span>Emerging Artists</span><span class="gold">✦</span><span>New Voices</span><span class="gold">✦</span><span>Good Work Media</span>
+    </div>
+  </div>
+
+  <section>
+    <div class="two-col">
+      <div>
+        <p class="section-label">Our Mission</p>
+        <h2>A different kind of <em>publishing house</em></h2>
+        <p>Good Work Media provides new and emerging talented artists with a safe, accessible, and inclusive learning experience to begin — or encourage advancement within — their careers.</p>
+        <p>We believe we can positively impact the creative industry by creating a space where new, young, and diverse voices can learn to edit, workshop, and publish their work without compromising the integrity of their art.</p>
+        <button class="btn" onclick="showPage('about')">Read More</button>
+      </div>
+      <div id="mission-side-el" style="width:100%;height:420px;"></div>
+    </div>
+  </section>
+
+  <div class="feature-strip">
+    <div class="feature-item">
+      <span class="feature-num">✦</span>
+      <p class="section-label" style="margin-bottom:0.5rem;">Heritage Podcast</p>
+      <p style="font-size:0.95rem;">Life stories from those who lived them.</p>
+    </div>
+    <div class="feature-item">
+      <span class="feature-num">✦</span>
+      <p class="section-label" style="margin-bottom:0.5rem;">Zines & Print</p>
+      <p style="font-size:0.95rem;">Poetry, fiction & art in your hands.</p>
+    </div>
+    <div class="feature-item">
+      <span class="feature-num">✦</span>
+      <p class="section-label" style="margin-bottom:0.5rem;">Annual Review</p>
+      <p style="font-size:0.95rem;">Our largest production of the year.</p>
+    </div>
+  </div>
+
+  <div class="img-banner">
+    <div id="banner-books-el" style="width:100%;height:100%;"></div>
+    <div class="img-banner-text">
+      <p class="section-label">Getting published for the first time can be daunting</p>
+      <h2 style="font-size:clamp(1.8rem,4vw,3rem);">We're here to make it <em>less so.</em></h2>
+      <button class="btn btn-filled" onclick="showPage('submissions')" style="margin-top:2rem;">Submit Your Work</button>
+    </div>
+  </div>
+
+  <section>
+    <div class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));">
+      <div class="card" onclick="showPage('heritage')">
+        <p class="section-label">Audio</p>
+        <h3>Heritage Podcast</h3>
+        <p>Interview-based conversations with elderly people — giving them a platform to share their life stories in their own words.</p>
+        <span style="color:var(--gold);font-family:'Josefin Sans',sans-serif;font-size:0.65rem;letter-spacing:0.2em;">LISTEN NOW →</span>
+      </div>
+      <div class="card" onclick="showPage('zines')">
+        <p class="section-label">Print & Digital</p>
+        <h3>The Zine Zone</h3>
+        <p>An ongoing effort to promote new and thought-provoking poetry, short fiction, and visual art. Submissions open.</p>
+        <span style="color:var(--gold);font-family:'Josefin Sans',sans-serif;font-size:0.65rem;letter-spacing:0.2em;">LEARN MORE →</span>
+      </div>
+      <div class="card" onclick="showPage('annual')">
+        <p class="section-label">Annual Publication</p>
+        <h3>Annual Review</h3>
+        <p>Poetry, short-form fiction, and visual art across all mediums. Focused on the discovery and refinement of new talent.</p>
+        <span style="color:var(--gold);font-family:'Josefin Sans',sans-serif;font-size:0.65rem;letter-spacing:0.2em;">LEARN MORE →</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ ABOUT ══ -->
+<div id="about" class="page">
+  <div class="page-header">
+    <div class="page-header-bg" id="about-header-el"></div>
+    <div class="page-header-overlay"></div>
+    <p class="section-label">Who We Are</p>
+    <h2>About <em>Good Work Media</em></h2>
+  </div>
+  <section>
+    <p class="section-label" style="text-align:center;">Our Team</p>
+    <h2 style="text-align:center;margin-bottom:3rem;">The people behind the <em>work</em></h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-portrait" id="delany-portrait"></div>
+        <p class="section-label">Founder & Editor</p>
+        <h3>Delany Burk</h3>
+        <p style="max-width:380px;">Poet, author, and information professional from San Luis Obispo, California. Delany attended Idyllwild Arts Academy, where they gained experience in the publishing industry as an editor for the journal <em>Parallax</em>.</p>
+        <p style="max-width:380px;">They received honorable mentions in the Scholastic Arts and Writing Competition (2015, 2016), worked at a local newspaper, and in 2022 completed and self-edited a full-length novel. In 2023, their business plan for Good Work Media won a runner-up position in the Tahoe Preger Prize Creative Idea Challenge.</p>
+        <p style="max-width:380px;">Currently pursuing a Master of Library and Information Science, specializing in library leadership and web programming.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-portrait" id="sarah-portrait"></div>
+        <p class="section-label">Visual Arts Editor</p>
+        <h3>Sarah Murray</h3>
+        <p style="max-width:380px;">Conceptual visual artist from Lansdale, Pennsylvania. Sarah graduated from the University of Nevada Reno at Lake Tahoe with a Bachelor's degree in Fine Art.</p>
+        <p style="max-width:380px;">In 2023, Sarah completed her senior show combining photography, sculpture, and found objects. She has editorial experience assisting in the marketing and promotion of on-campus events at UNR Lake Tahoe.</p>
+      </div>
+    </div>
+    <div class="gold-divider"><span class="gold-divider-star">✦</span></div>
+    <div style="text-align:center;max-width:700px;margin:0 auto;">
+      <p class="section-label">Our Philosophy</p>
+      <h2>For the artists. <em>Not the profit.</em></h2>
+      <p>Good Work Media believes that the publishing industry too often compromises writers' and artists' vision and integrity in pursuit of profit. We propose an alternative model — focused on educating and engaging with new artists and their authentic voices.</p>
+      <p>We are working toward nonprofit status, which will open opportunities for grants, donors, and sponsors to raise money for artists in our communities.</p>
+    </div>
+  </section>
+</div>
+
+<!-- ══ PROJECTS ══ -->
+<div id="projects" class="page">
+  <div class="page-header">
+    <div class="page-header-bg" id="projects-header-el"></div>
+    <div class="page-header-overlay"></div>
+    <p class="section-label">What We Make</p>
+    <h2>Our <em>Projects</em></h2>
+    <p style="max-width:600px;margin:1rem auto 0;color:var(--muted);">We focus on projects that cross boundaries, ask important questions, and uplift new voices — assisting each artist throughout the entire creative process.</p>
+  </div>
+  <section>
+    <div class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(340px,1fr));">
+      <div class="project-card" onclick="showPage('heritage')">
+        <div class="project-card-img" id="proj-heritage-el"></div>
+        <div class="project-card-body">
+          <p class="section-label">Audio</p>
+          <h3>Heritage Podcast</h3>
+          <p>Interview-based conversations with elderly people — giving them a platform to share their life stories in their own words.</p>
+          <button class="btn" style="margin-top:1rem;">Listen Now →</button>
+        </div>
+      </div>
+      <div class="project-card" onclick="showPage('zines')">
+        <div class="project-card-img" id="proj-zines-el"></div>
+        <div class="project-card-body">
+          <p class="section-label">Print & Digital</p>
+          <h3>The Zine Zone</h3>
+          <p>An ongoing effort to promote new and thought-provoking poetry, short fiction, and visual art.</p>
+          <button class="btn" style="margin-top:1rem;">Learn More →</button>
+        </div>
+      </div>
+      <div class="project-card" onclick="showPage('annual')">
+        <div class="project-card-img" id="proj-annual-el"></div>
+        <div class="project-card-body">
+          <p class="section-label">Annual Publication</p>
+          <h3>Annual Review</h3>
+          <p>Our largest production — poetry, fiction up to 10,000 words, and visual art across all mediums.</p>
+          <button class="btn" style="margin-top:1rem;">Learn More →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ HERITAGE ══ -->
+<div id="heritage" class="page">
+  <div class="page-header">
+    <div class="page-header-bg" id="heritage-header-el"></div>
+    <div class="page-header-overlay"></div>
+    <p class="section-label">Good Work Media Presents</p>
+    <h2>Heritage <em>Podcast</em></h2>
+    <p style="max-width:560px;margin:1rem auto 0;color:var(--muted);font-style:italic;">Conversations with the people who lived history — in their own words.</p>
+  </div>
+  <section>
+    <div class="two-col" style="margin-bottom:5rem;">
+      <div>
+        <div class="arch-frame" id="heritage-arch-el"></div>
+      </div>
+      <div>
+        <p class="section-label">About the Show</p>
+        <h2>Every life is a <em>story</em> worth telling</h2>
+        <p>Heritage is an interview-based podcast centered around conversations with elderly people — giving them a platform to share their life stories, experiences, and the wisdom that comes with a life fully lived.</p>
+        <p>Too often, the stories of older generations go unrecorded and unheard. Heritage exists to change that. Hosted by Delany Burk.</p>
+        <div style="margin-top:2rem;">
+          <button class="btn btn-filled">Listen on Spotify</button>
+          <button class="btn">Apple Podcasts</button>
+        </div>
+      </div>
+    </div>
+    <div class="gold-divider"><span class="gold-divider-star">✦</span></div>
+    <p class="section-label" style="margin-bottom:2rem;">Episodes</p>
+    <div class="episode-card">
+      <div class="ep-num">01</div>
+      <div class="ep-play">▶</div>
+      <div>
+        <h3 style="font-size:1.2rem;margin-bottom:0.3rem;">Episode One</h3>
+        <p style="font-size:0.9rem;margin:0;">Coming soon — subscribe to be notified on release.</p>
+      </div>
+    </div>
+    <div class="episode-card">
+      <div class="ep-num">02</div>
+      <div class="ep-play">▶</div>
+      <div>
+        <h3 style="font-size:1.2rem;margin-bottom:0.3rem;">Episode Two</h3>
+        <p style="font-size:0.9rem;margin:0;">Coming soon — subscribe to be notified on release.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ ZINES ══ -->
+<div id="zines" class="page">
+  <div class="page-header">
+    <div class="page-header-bg" id="zines-header-el"></div>
+    <div class="page-header-overlay"></div>
+    <p class="section-label">Print & Digital</p>
+    <h2>The Zine <em>Zone</em></h2>
+  </div>
+  <section>
+    <div class="two-col">
+      <div>
+        <p class="section-label">About This Project</p>
+        <h2>Small format. <em>Big voices.</em></h2>
+        <p>Our Zine project is an ongoing effort to promote new and thought-provoking poetry, short fiction, and visual art. Completed zines can be submitted in any size and folding technique.</p>
+        <p>Poetry and short fiction submitted independently will be paired with a visual art piece that best complements them — and vice versa.</p>
+        <button class="btn btn-filled" onclick="showPage('submissions')" style="margin-top:1rem;">Submit for Zines</button>
+      </div>
+      <div>
+        <div class="guidelines-box">
+          <h4>What We Accept</h4>
+          <p style="font-size:0.95rem;">Poetry · Short Fiction · Visual Art · Photography · Completed Zines (any size or fold)</p>
+        </div>
+        <div class="guidelines-box" style="margin-top:2px;">
+          <h4>Publishing Timeline</h4>
+          <p style="font-size:0.95rem;">Submissions open Day 1 → Accepted Day 20 → Workshop begins Day 25 → Visual integration Day 30 → Final review & release Day 35</p>
+        </div>
+        <div class="guidelines-box" style="margin-top:2px;">
+          <h4>Format</h4>
+          <p style="font-size:0.95rem;">Available digitally on our website and in limited print quantities.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ ANNUAL ══ -->
+<div id="annual" class="page">
+  <div class="page-header">
+    <div class="page-header-bg" id="annual-header-el"></div>
+    <div class="page-header-overlay"></div>
+    <p class="section-label">Annual Publication</p>
+    <h2>The Annual <em>Review</em></h2>
+  </div>
+  <section>
+    <div class="two-col">
+      <div>
+        <p class="section-label">About This Project</p>
+        <h2>Our largest <em>production</em></h2>
+        <p>The Good Work Media Annual Review is our most ambitious publication — featuring poetry, short-form fiction up to 10,000 words, and visual art across all mediums including 2D work, photography, and sculpture.</p>
+        <p>There is no specific focus in subject or genre. This review is dedicated entirely to the discovery and refinement of new talent.</p>
+        <p>Each writing piece undergoes one-on-one editing sessions, small group workshops, and the writer receives a personalized grammar guide when their piece is finished.</p>
+        <button class="btn btn-filled" onclick="showPage('submissions')" style="margin-top:1rem;">Submit for Annual Review</button>
+      </div>
+      <div>
+        <div class="guidelines-box">
+          <h4>What We Accept</h4>
+          <p style="font-size:0.95rem;">Poetry · Short Fiction (up to 10,000 words) · Nonfiction · Visual Art · Photography · Sculpture</p>
+        </div>
+        <div class="guidelines-box" style="margin-top:2px;">
+          <h4>Publishing Timeline</h4>
+          <p style="font-size:0.95rem;">180-day cycle · Two reviews per year · Workshops begin Day 60 · Final review Day 90 · Print Day 150</p>
+        </div>
+        <div class="guidelines-box" style="margin-top:2px;">
+          <h4>Our Process</h4>
+          <p style="font-size:0.95rem;">One-on-one editing · Group workshops · Personalized grammar guide · Print and digital publication</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ HOW IT WORKS ══ -->
+<div id="how" class="page">
+  <div class="page-header">
+    <div class="page-header-bg" id="how-header-el"></div>
+    <div class="page-header-overlay"></div>
+    <p class="section-label">The Process</p>
+    <h2>How It <em>Works</em></h2>
+  </div>
+  <section>
+    <div class="two-col">
+      <div class="steps">
+        <div class="step">
+          <h3>Your Submission</h3>
+          <p>Submit a piece of visual art or writing directly on our website or via our Submittable page. We accept a wide range of work — our goal is to get your work out there.</p>
+        </div>
+        <div class="step">
+          <h3>Our Editing Process</h3>
+          <p>We'll contact you if your piece is accepted, then schedule an editing session in person or via Zoom. We want to understand your vision and work with you to preserve it.</p>
+        </div>
+        <div class="step">
+          <h3>Publication</h3>
+          <p>Your work will be featured on our website, in our print journal, or become its own zine — reaching the world exactly as you meant it to.</p>
+        </div>
+      </div>
+      <div>
+        <div id="how-side-el" style="width:100%;height:380px;"></div>
+        <div style="background:var(--card);border:1px solid var(--border);border-top:none;padding:2rem;">
+          <p style="font-style:italic;color:var(--muted);font-size:1.05rem;margin:0;">"Getting published for the first time can be daunting — and we are here to make it less so."</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ SUBMISSIONS ══ -->
+<div id="submissions" class="page">
+  <div class="page-header">
+    <div class="page-header-bg" id="submissions-header-el"></div>
+    <div class="page-header-overlay"></div>
+    <p class="section-label">Open Now</p>
+    <h2>Submit Your <em>Work</em></h2>
+  </div>
+  <section>
+    <div class="two-col">
+      <div>
+        <p class="section-label">Guidelines</p>
+        <h2>Before you <em>submit</em></h2>
+        <p>Each piece must include a cover letter with the submission date, your name, age, contact information, and a short statement about you and the piece. Submit each piece in PDF form.</p>
+        <p>If you'd like your piece considered for a specific project, include your choice in your cover letter. If no choice is listed, we'll place it where we feel it fits best.</p>
+        <p style="font-size:0.9rem;color:var(--gold);font-style:italic;">Each piece will be judged prior to reading biographical information and the cover letter.</p>
+        <div class="guidelines-box" style="margin-top:2rem;">
+          <h4>Poetry</h4>
+          <p style="font-size:0.9rem;">Play freely with format and style. Up to 5 poems per submission period. Total pages must not exceed 15.</p>
+        </div>
+        <div class="guidelines-box" style="margin-top:2px;">
+          <h4>Fiction & Nonfiction</h4>
+          <p style="font-size:0.9rem;">Size 12, Times New Roman, double spaced, numbered pages. Under 15 pages. One piece per submission period.</p>
+        </div>
+        <div class="guidelines-box" style="margin-top:2px;">
+          <h4>Visual Art</h4>
+          <p style="font-size:0.9rem;">No restrictions on subject or style. JPG format. Maximum 5 images per submission period.</p>
+        </div>
+      </div>
+      <div>
+        <p class="section-label">Submit Here</p>
+        <h2>Send us your <em>work</em></h2>
+        <div class="form-group"><label>Full Name</label><input type="text" placeholder="Your name"></div>
+        <div class="form-group"><label>Age</label><input type="number" placeholder="Your age"></div>
+        <div class="form-group"><label>Email Address</label><input type="email" placeholder="your@email.com"></div>
+        <div class="form-group">
+          <label>Project</label>
+          <select>
+            <option value="">— Select a project —</option>
+            <option>Zine Zone</option>
+            <option>Annual Review</option>
+            <option>No preference — place where it fits</option>
+          </select>
+        </div>
+        <div class="form-group"><label>About You & Your Piece</label><textarea placeholder="Tell us about yourself and the work you're submitting..."></textarea></div>
+        <div class="form-group"><label>Upload Your Piece (PDF / JPG)</label><input type="file" accept=".pdf,.jpg,.jpeg"></div>
+        <button class="btn btn-filled" style="width:100%;margin-top:0.5rem;font-size:0.7rem;" onclick="handleSubmit()">Submit Your Work</button>
+        <p id="submit-msg" style="margin-top:1rem;font-size:0.9rem;color:var(--gold);display:none;">Thank you — we'll be in touch at submissions@goodworkmedia.org</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ SHOP ══ -->
+<div id="shop" class="page">
+  <div class="page-header">
+    <p class="section-label">Support the Work</p>
+    <h2>The <em>Shop</em></h2>
+    <p style="max-width:500px;margin:1rem auto 0;color:var(--muted);">Every purchase directly supports emerging artists and the Good Work Media mission.</p>
+  </div>
+  <section>
+    <div class="shop-grid">
+      <div class="shop-card">
+        <div style="width:100%;height:220px;" id="shop-zine-el"></div>
+        <div class="shop-body">
+          <p class="shop-price">Coming Soon</p>
+          <h3 style="font-size:1.1rem;">Issue One Zine</h3>
+          <p style="font-size:0.9rem;">Our inaugural print zine featuring poetry, fiction, and visual art from emerging voices.</p>
+          <button class="btn" style="margin-top:1rem;">Notify Me</button>
+        </div>
+      </div>
+      <div class="shop-card">
+        <div style="width:100%;height:220px;" id="shop-annual-el"></div>
+        <div class="shop-body">
+          <p class="shop-price">Coming Soon</p>
+          <h3 style="font-size:1.1rem;">Annual Review Vol. 1</h3>
+          <p style="font-size:0.9rem;">The first edition of our annual publication — poetry, fiction, and art from our inaugural cohort.</p>
+          <button class="btn" style="margin-top:1rem;">Notify Me</button>
+        </div>
+      </div>
+      <div class="shop-card">
+        <div style="width:100%;height:220px;" id="shop-guide-el"></div>
+        <div class="shop-body">
+          <p class="shop-price">$7.00</p>
+          <h3 style="font-size:1.1rem;">Self-Editing Checklist</h3>
+          <p style="font-size:0.9rem;">A practical guide to editing your own fiction before submission. PDF download.</p>
+          <button class="btn btn-filled" style="margin-top:1rem;">Buy Now</button>
+        </div>
+      </div>
+      <div class="shop-card">
+        <div style="width:100%;height:220px;" id="shop-contract-el"></div>
+        <div class="shop-body">
+          <p class="shop-price">$5.00</p>
+          <h3 style="font-size:1.1rem;">Contract Red Flags Guide</h3>
+          <p style="font-size:0.9rem;">Know what to look for before you sign. Essential reading for any new artist. PDF download.</p>
+          <button class="btn btn-filled" style="margin-top:1rem;">Buy Now</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ BLOG ══ -->
+<div id="blog" class="page">
+  <div class="page-header">
+    <div class="page-header-bg" id="blog-header-el"></div>
+    <div class="page-header-overlay"></div>
+    <p class="section-label">From the Desk of Good Work Media</p>
+    <h2>Blog & <em>News</em></h2>
+  </div>
+  <section>
+    <div class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(340px,1fr));">
+      <div class="card">
+        <p class="section-label" style="margin-bottom:0.5rem;">2026</p>
+        <h3>Good Work Media is here</h3>
+        <p style="font-size:0.95rem;">We're officially open — submissions, projects, and the Heritage Podcast are all live. Read about what's coming next.</p>
+        <button class="btn" style="margin-top:1.5rem;">Read More →</button>
+      </div>
+      <div class="card" style="opacity:0.4;">
+        <p class="section-label" style="margin-bottom:0.5rem;">Coming Soon</p>
+        <h3>More posts on the way</h3>
+        <p style="font-size:0.95rem;">Artist spotlights, project updates, and resources for emerging creators.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ CONTACT ══ -->
+<div id="contact" class="page">
+  <div class="page-header">
+    <div class="page-header-bg" id="contact-header-el"></div>
+    <div class="page-header-overlay"></div>
+    <p class="section-label">Get In Touch</p>
+    <h2>Say <em>Hello</em></h2>
+  </div>
+  <section>
+    <div class="two-col">
+      <div>
+        <h2>We'd love to <em>hear from you</em></h2>
+        <p>Whether you have a question about submissions, want to collaborate, or just want to say hello — we're here.</p>
+        <div style="margin-top:3rem;">
+          <div style="margin-bottom:2rem;">
+            <p class="section-label">General Inquiries</p>
+            <p style="color:var(--cream);">contact@goodworkmedia.org</p>
+          </div>
+          <div style="margin-bottom:2rem;">
+            <p class="section-label">Submissions</p>
+            <p style="color:var(--cream);">submissions@goodworkmedia.org</p>
+          </div>
+          <div>
+            <p class="section-label">Heritage Podcast</p>
+            <p style="color:var(--cream);">heritagepod@goodworkmedia.org</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <form action="https://forms.zohopublic.com/contactgoodwo1/form/GoodWorkMediaContact/formperma/06mb-_E84CrCSAM8YkblhJFK2xHvJC9Q-JGkNyfRiQ4/htmlRecords/submit" name="form" id="contact-form" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
+          <input type="hidden" name="zf_referrer_name" value="">
+          <input type="hidden" name="zf_redirect_url" value="">
+          <input type="hidden" name="zc_gad" value="">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div class="form-group">
+              <label>First Name</label>
+              <input type="text" maxlength="255" name="Name_First" placeholder="First name">
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input type="text" maxlength="255" name="Name_Last" placeholder="Last name">
+            </div>
+          </div>
+          <div class="form-group"><label>Email</label><input type="text" maxlength="255" name="Email" placeholder="your@email.com"></div>
+          <div class="form-group"><label>Subject</label><input type="text" name="SingleLine" maxlength="255" placeholder="What's this about?"></div>
+          <div class="form-group"><label>Message</label><textarea name="MultiLine" maxlength="65535" placeholder="Tell us what's on your mind..."></textarea></div>
+          <button type="submit" class="btn btn-filled" style="width:100%;">Send Message</button>
+        </form>
+        <div id="contact-thankyou" style="display:none;margin-top:2rem;padding:2.5rem;background:var(--card);border:1px solid var(--gold);text-align:center;">
+          <p style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--cream);margin-bottom:0.5rem;">Thank <em style="color:var(--gold);">you.</em></p>
+          <p style="font-size:0.95rem;">We've received your message and will be in touch at <span style="color:var(--cream);">contact@goodworkmedia.org</span> shortly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="wordmark" style="display:inline-block;margin-bottom:1.5rem;cursor:default;">
+      Good Work Media<span>for the emerging artist</span>
+    </div>
+    <p>Providing a safe, accessible, and inclusive learning experience for talented new writers and artists. Based in San Luis Obispo, California.</p>
+    <p style="margin-top:1.5rem;font-size:0.85rem;">contact@goodworkmedia.org</p>
+  </div>
+  <div>
+    <p class="section-label" style="margin-bottom:1.5rem;">Navigate</p>
+    <ul class="footer-links">
+      <li><a onclick="showPage('home')">Home</a></li>
+      <li><a onclick="showPage('about')">About</a></li>
+      <li><a onclick="showPage('projects')">Our Projects</a></li>
+      <li><a onclick="showPage('how')">How It Works</a></li>
+      <li><a onclick="showPage('submissions')">Submissions</a></li>
+      <li><a onclick="showPage('shop')">Shop</a></li>
+      <li><a onclick="showPage('blog')">Blog</a></li>
+      <li><a onclick="showPage('contact')">Contact</a></li>
+    </ul>
+  </div>
+  <div>
+    <p class="section-label" style="margin-bottom:1.5rem;">Projects</p>
+    <ul class="footer-links">
+      <li><a onclick="showPage('heritage')">Heritage Podcast</a></li>
+      <li><a onclick="showPage('zines')">Zine Zone</a></li>
+      <li><a onclick="showPage('annual')">Annual Review</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2026 Good Work Media — All Rights Reserved</p>
+  <p>San Luis Obispo, California</p>
+</div>
+
+<script>
+// ── PAGE NAVIGATION ──────────────────────────────────────────
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.querySelectorAll('.dropdown-menu').forEach(m=>m.classList.remove('open'));
+}
+
+// ── DROPDOWN ─────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  const toggle = document.getElementById('projects-toggle');
+  const menu   = document.getElementById('projects-menu');
+  if(toggle && menu){
+    toggle.addEventListener('click', e=>{
+      e.stopPropagation();
+      menu.classList.toggle('open');
+    });
+  }
+  document.addEventListener('click',()=>{
+    document.querySelectorAll('.dropdown-menu').forEach(m=>m.classList.remove('open'));
+  });
+
+  // ── IMAGE SLOTS ─────────────────────────────────────────────
+  function placeholder(label){
+    return `<div class="img-placeholder"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>${label}</span></div>`;
+  }
+
+  function setImg(id, url, label){
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.innerHTML = url
+      ? `<img src="${url}" alt="${label}" style="width:100%;height:100%;object-fit:cover;filter:saturate(0.6) brightness(0.65);">`
+      : placeholder(label);
+  }
+
+  function setPortrait(id, url, name){
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.innerHTML = url
+      ? `<img src="${url}" alt="${name}" style="width:100%;height:100%;object-fit:cover;object-position:center top;">`
+      : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem;background:var(--card);">👤</div>`;
+  }
+
+  const slots = [
+    ['hero-bg-el',          IMAGES.hero_bg,            'Hero background'],
+    ['mission-side-el',     IMAGES.mission_side,       'Mission image'],
+    ['banner-books-el',     IMAGES.banner_books,       'Banner image'],
+    ['about-header-el',     IMAGES.about_header,       'About header'],
+    ['projects-header-el',  IMAGES.projects_header,    'Projects header'],
+    ['heritage-header-el',  IMAGES.heritage_header,    'Heritage header'],
+    ['heritage-arch-el',    IMAGES.heritage_arch,      'Heritage portrait'],
+    ['proj-heritage-el',    IMAGES.heritage_header,    'Heritage project'],
+    ['zines-header-el',     IMAGES.zines_header,       'Zines header'],
+    ['proj-zines-el',       IMAGES.zines_header,       'Zines project'],
+    ['annual-header-el',    IMAGES.annual_header,      'Annual header'],
+    ['proj-annual-el',      IMAGES.annual_header,      'Annual project'],
+    ['how-side-el',         IMAGES.how_side,           'How it works'],
+    ['how-header-el',       IMAGES.how_side,           'How it works header'],
+    ['submissions-header-el',IMAGES.submissions_header,'Submissions header'],
+    ['blog-header-el',      IMAGES.blog_header,        'Blog header'],
+    ['contact-header-el',   IMAGES.contact_header,     'Contact header'],
+    ['shop-zine-el',        '',                        'Zine cover'],
+    ['shop-annual-el',      '',                        'Annual cover'],
+    ['shop-guide-el',       '',                        'Guide cover'],
+    ['shop-contract-el',    '',                        'Contract guide cover'],
+  ];
+
+  slots.forEach(([id,url,label])=>setImg(id,url,label));
+  setPortrait('delany-portrait', IMAGES.delany, 'Delany Burk');
+  setPortrait('sarah-portrait',  IMAGES.sarah,  'Sarah Murray');
+
+  // ── CONTACT FORM ─────────────────────────────────────────────
+  const form = document.getElementById('contact-form');
+  if(form){
+    form.addEventListener('submit', async e=>{
+      e.preventDefault();
+      try{
+        await fetch(form.action,{method:'POST',body:new FormData(form),mode:'no-cors'});
+      }catch(_){}
+      form.style.display='none';
+      const ty = document.getElementById('contact-thankyou');
+      if(ty) ty.style.display='block';
+    });
+  }
+});
+
+// ── SUBMISSIONS CONFIRM ───────────────────────────────────────
+function handleSubmit(){
+  const msg = document.getElementById('submit-msg');
+  if(msg) msg.style.display='block';
+}
+</script>
+</body>
+</html>
